@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Nölke Zahida Restaurant — Order Menu</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="header-brand">
+                <h1 class="menu-title">MENU</h1>
+                <p class="restaurant-name">Nölke Zahida Restaurant</p>
+            </div>
+            <button class="cart-toggle" id="cartToggle" aria-label="View cart">
+                <svg class="cart-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+                    <line x1="3" y1="6" x2="21" y2="6"/>
+                    <path d="M16 10a4 4 0 01-8 0"/>
+                </svg>
+                <span class="cart-count" id="cartCount">0</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Parallax hero section -->
+    <section class="parallax-hero">
+        <div class="parallax-hero-bg" id="parallaxHeroBg"></div>
+        <div class="parallax-hero-content">
+            <span class="parallax-hero-tagline">Welcome to</span>
+            <h2 class="parallax-hero-title">Nölke Zahida Restaurant</h2>
+            <p class="parallax-hero-subtitle">Scan & order at your table</p>
+        </div>
+    </section>
+
+    <main class="menu-container">
+        <p class="order-intro">Order our best food options — Scan & order at your table</p>
+
+        <!-- Quick Menu (first thing customers see) -->
+        <section class="quick-menu-section">
+            <h2 class="quick-menu-title">Our Menu</h2>
+            <div class="quick-menu-columns">
+                <div class="quick-menu-col">
+                    <h3 class="quick-section-title">MAIN COURSE</h3>
+                    <ul class="quick-menu-list" id="quickMainCourse"></ul>
+                </div>
+                <div class="quick-menu-col">
+                    <h3 class="quick-section-title">APPETIZER</h3>
+                    <ul class="quick-menu-list" id="quickAppetizer"></ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Full menu with ingredients (scroll down to see details) -->
+        <section class="details-section">
+            <h2 class="details-section-title">View ingredients & details</h2>
+            <p class="details-intro">Click an item above or browse below for full details, ingredients, and allergen info.</p>
+
+            <div class="menu-section">
+                <h2 class="section-title">MAIN COURSE</h2>
+                <div class="menu-grid" id="mainCourse"></div>
+            </div>
+
+            <div class="menu-section">
+                <h2 class="section-title">APPETIZER</h2>
+                <div class="menu-grid" id="appetizer"></div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Cart Sidebar -->
+    <aside class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h2>Your Order</h2>
+            <button class="cart-close" id="cartClose" aria-label="Close cart">&times;</button>
+        </div>
+        <div class="cart-items" id="cartItems">
+            <p class="cart-empty" id="cartEmpty">Your cart is empty. Add items to get started.</p>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Total</span>
+                <span id="cartTotal">$0</span>
+            </div>
+            <button class="checkout-btn" id="checkoutBtn" disabled>Proceed to Checkout</button>
+        </div>
+    </aside>
+
+    <!-- Checkout Page -->
+    <div class="checkout-page" id="checkoutPage">
+        <div class="checkout-overlay" id="checkoutOverlay"></div>
+        <div class="checkout-content">
+            <button class="checkout-back" id="checkoutBack" aria-label="Back to cart">&larr; Back</button>
+            <h2 class="checkout-title">Checkout</h2>
+
+            <div class="checkout-summary" id="checkoutSummary"></div>
+
+            <div class="checkout-total-row">
+                <span>Total</span>
+                <span id="checkoutTotal">$0</span>
+            </div>
+
+            <div class="checkout-payment">
+                <h3>Payment Method</h3>
+                <label class="payment-option">
+                    <input type="radio" name="payment" value="online" checked>
+                    <span class="payment-option-box">
+                        <span class="payment-icon">💳</span>
+                        <span class="payment-label">Online Payment</span>
+                        <span class="payment-desc">Pay now with card or digital wallet</span>
+                    </span>
+                </label>
+                <label class="payment-option">
+                    <input type="radio" name="payment" value="counter">
+                    <span class="payment-option-box">
+                        <span class="payment-icon">🏪</span>
+                        <span class="payment-label">Pay at Counter</span>
+                        <span class="payment-desc">Pay when your order is ready</span>
+                    </span>
+                </label>
+            </div>
+
+            <button class="checkout-confirm-btn" id="checkoutConfirm">Confirm Order</button>
+        </div>
+    </div>
+
+    <div class="cart-overlay" id="cartOverlay"></div>
+
+    <footer class="footer">
+        <div class="footer-qr-section">
+            <div class="footer-qr-box">
+                <p class="footer-qr-label">Scan to order at your table</p>
+                <img id="qrCode" class="footer-qr-code" src="" alt="QR Code - Scan to open menu" width="140" height="140">
+                <p class="footer-qr-hint">Point your camera at the QR code</p>
+            </div>
+        </div>
+        <div class="footer-image">
+            <div class="footer-overlay">
+                <p class="footer-tagline">AVAILABLE ON YOUR FOOD</p>
+                <p class="footer-contact">312-692-0767 | www.companyname.com</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
