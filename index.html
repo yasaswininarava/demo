@@ -3,42 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Nölke Zahida Restaurant — Order Menu</title>
+    <title>Nölke Zahida Restaurant — Welcome</title>
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
 </head>
-<body>
+<body class="landing-page">
     <header class="header">
-        <div class="header-content">
+        <div class="header-content header-content--centered">
             <div class="header-brand">
-                <h1 class="menu-title">MENU</h1>
+                <h1 class="menu-title">WELCOME</h1>
                 <p class="restaurant-name">Nölke Zahida Restaurant</p>
-            </div>
-            <div class="header-actions">
-                <div class="search-bar-wrapper">
-                    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                        <circle cx="11" cy="11" r="8"/>
-                        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-                    </svg>
-                    <input type="search" id="menuSearch" class="search-input" placeholder="Search dishes..." autocomplete="off">
-                    <button type="button" class="search-clear" id="searchClear" aria-label="Clear search" title="Clear">×</button>
-                </div>
-                <button class="cart-toggle" id="cartToggle" aria-label="View cart">
-                <svg class="cart-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
-                    <line x1="3" y1="6" x2="21" y2="6"/>
-                    <path d="M16 10a4 4 0 01-8 0"/>
-                </svg>
-                <span class="cart-count" id="cartCount">0</span>
-            </button>
             </div>
         </div>
     </header>
 
-    <!-- Parallax hero section -->
-    <section class="parallax-hero">
+    <section class="parallax-hero parallax-hero--landing">
         <div class="parallax-hero-bg" id="parallaxHeroBg"></div>
         <div class="parallax-hero-content">
             <span class="parallax-hero-tagline">Welcome to</span>
@@ -47,114 +28,53 @@
         </div>
     </section>
 
-    <main class="menu-container">
-        <p class="order-intro">Order our best food options — Scan & order at your table</p>
-        <p class="search-message" id="searchMessage"></p>
-
-        <!-- Quick Menu (first thing customers see) -->
-        <section class="quick-menu-section">
-            <h2 class="quick-menu-title">Our Menu</h2>
-            <div class="quick-menu-columns">
-                <div class="quick-menu-col">
-                    <h3 class="quick-section-title">MAIN COURSE</h3>
-                    <ul class="quick-menu-list" id="quickMainCourse"></ul>
-                </div>
-                <div class="quick-menu-col">
-                    <h3 class="quick-section-title">APPETIZER</h3>
-                    <ul class="quick-menu-list" id="quickAppetizer"></ul>
-                </div>
+    <main class="landing-container">
+        <form class="landing-form" id="landingForm">
+            <div class="landing-form-group">
+                <label for="guestName" class="landing-label">Enter your name</label>
+                <input type="text" id="guestName" class="landing-input" placeholder="Your name" required autocomplete="name">
             </div>
-        </section>
-
-        <!-- Full menu with ingredients (scroll down to see details) -->
-        <section class="details-section">
-            <h2 class="details-section-title">View ingredients & details</h2>
-            <p class="details-intro">Click an item above or browse below for full details, ingredients, and allergen info.</p>
-
-            <div class="similar-dishes-section" id="similarDishesSection" style="display: none;">
-                <h3 class="similar-dishes-title" id="similarDishesTitle"></h3>
-                <div class="menu-grid" id="similarDishesGrid"></div>
+            <div class="landing-form-group">
+                <label for="tableNo" class="landing-label">Enter your table no</label>
+                <select id="tableNo" class="landing-select" required>
+                    <option value="" disabled selected>Select table</option>
+                    <option value="1">Table 1</option>
+                    <option value="2">Table 2</option>
+                    <option value="3">Table 3</option>
+                    <option value="4">Table 4</option>
+                    <option value="5">Table 5</option>
+                    <option value="6">Table 6</option>
+                    <option value="7">Table 7</option>
+                    <option value="8">Table 8</option>
+                    <option value="9">Table 9</option>
+                    <option value="10">Table 10</option>
+                    <option value="11">Table 11</option>
+                    <option value="12">Table 12</option>
+                    <option value="13">Table 13</option>
+                    <option value="14">Table 14</option>
+                    <option value="15">Table 15</option>
+                    <option value="16">Table 16</option>
+                    <option value="17">Table 17</option>
+                    <option value="18">Table 18</option>
+                    <option value="19">Table 19</option>
+                    <option value="20">Table 20</option>
+                    <option value="21">Table 21</option>
+                    <option value="22">Table 22</option>
+                    <option value="23">Table 23</option>
+                    <option value="24">Table 24</option>
+                    <option value="25">Table 25</option>
+                    <option value="26">Table 26</option>
+                    <option value="27">Table 27</option>
+                    <option value="28">Table 28</option>
+                    <option value="29">Table 29</option>
+                    <option value="30">Table 30</option>
+                </select>
             </div>
-
-            <div id="mainMenuSection">
-                <div class="menu-section">
-                    <h2 class="section-title">MAIN COURSE</h2>
-                    <div class="menu-grid" id="mainCourse"></div>
-                </div>
-                <div class="menu-section">
-                    <h2 class="section-title">APPETIZER</h2>
-                    <div class="menu-grid" id="appetizer"></div>
-                </div>
-            </div>
-        </section>
+            <button type="submit" class="landing-submit">View Menu</button>
+        </form>
     </main>
 
-    <!-- Cart Sidebar -->
-    <aside class="cart-sidebar" id="cartSidebar">
-        <div class="cart-header">
-            <h2>Your Order</h2>
-            <button class="cart-close" id="cartClose" aria-label="Close cart">&times;</button>
-        </div>
-        <div class="cart-items" id="cartItems">
-            <p class="cart-empty" id="cartEmpty">Your cart is empty. Add items to get started.</p>
-        </div>
-        <div class="cart-footer">
-            <div class="cart-total">
-                <span>Total</span>
-                <span id="cartTotal">$0</span>
-            </div>
-            <button class="checkout-btn" id="checkoutBtn" disabled>Proceed to Checkout</button>
-        </div>
-    </aside>
-
-    <!-- Checkout Page -->
-    <div class="checkout-page" id="checkoutPage">
-        <div class="checkout-overlay" id="checkoutOverlay"></div>
-        <div class="checkout-content">
-            <button class="checkout-back" id="checkoutBack" aria-label="Back to cart">&larr; Back</button>
-            <h2 class="checkout-title">Checkout</h2>
-
-            <div class="checkout-summary" id="checkoutSummary"></div>
-
-            <div class="checkout-total-row">
-                <span>Total</span>
-                <span id="checkoutTotal">$0</span>
-            </div>
-
-            <div class="checkout-payment">
-                <h3>Payment Method</h3>
-                <label class="payment-option">
-                    <input type="radio" name="payment" value="online" checked>
-                    <span class="payment-option-box">
-                        <span class="payment-icon">💳</span>
-                        <span class="payment-label">Online Payment</span>
-                        <span class="payment-desc">Pay now with card or digital wallet</span>
-                    </span>
-                </label>
-                <label class="payment-option">
-                    <input type="radio" name="payment" value="counter">
-                    <span class="payment-option-box">
-                        <span class="payment-icon">🏪</span>
-                        <span class="payment-label">Pay at Counter</span>
-                        <span class="payment-desc">Pay when your order is ready</span>
-                    </span>
-                </label>
-            </div>
-
-            <button class="checkout-confirm-btn" id="checkoutConfirm">Confirm Order</button>
-        </div>
-    </div>
-
-    <div class="cart-overlay" id="cartOverlay"></div>
-
-    <footer class="footer">
-        <div class="footer-qr-section">
-            <div class="footer-qr-box">
-                <p class="footer-qr-label">Scan to order at your table</p>
-                <img id="qrCode" class="footer-qr-code" src="" alt="QR Code - Scan to open menu" width="140" height="140">
-                <p class="footer-qr-hint">Point your camera at the QR code</p>
-            </div>
-        </div>
+    <footer class="footer footer--landing">
         <div class="footer-image">
             <div class="footer-overlay">
                 <p class="footer-tagline">AVAILABLE ON YOUR FOOD</p>
@@ -163,6 +83,6 @@
         </div>
     </footer>
 
-    <script src="script.js"></script>
+    <script src="landing.js"></script>
 </body>
 </html>

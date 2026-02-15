@@ -513,11 +513,14 @@ function confirmOrder() {
   const orderSummary = Object.entries(cart)
     .map(([_, item]) => `${item.name} × ${item.qty}`)
     .join(", ");
+  const guestName = sessionStorage.getItem("nolkeGuestName") || "";
+  const tableNo = sessionStorage.getItem("nolkeTableNo") || "";
+  const guestInfo = guestName || tableNo ? `\n\nTable ${tableNo} · ${guestName}` : "";
 
   const message =
     payment === "online"
-      ? `Order confirmed!\n\n${orderSummary}\n\nTotal: $${total}\n\nYou will be redirected to complete your online payment. Your order has been sent to the kitchen. Thank you!`
-      : `Order confirmed!\n\n${orderSummary}\n\nTotal: $${total}\n\nPlease pay at the counter when your order is ready. Thank you!`;
+      ? `Order confirmed!${guestInfo}\n\n${orderSummary}\n\nTotal: $${total}\n\nYou will be redirected to complete your online payment. Your order has been sent to the kitchen. Thank you!`
+      : `Order confirmed!${guestInfo}\n\n${orderSummary}\n\nTotal: $${total}\n\nPlease pay at the counter when your order is ready. Thank you!`;
 
   alert(message);
   cart = {};
@@ -526,20 +529,20 @@ function confirmOrder() {
   closeCart();
 }
 
-// QR Code for scan-to-order
+// QR Code for scan-to-order (points to landing page so fresh scans get name/table form)
 function initQRCode() {
   const qrImg = document.getElementById("qrCode");
   if (!qrImg) return;
 
-  const url = SITE_URL || (typeof window !== "undefined" ? window.location.href : "");
-  if (!url || url.startsWith("file://")) {
+  const baseUrl = SITE_URL || (typeof window !== "undefined" ? window.location.origin + "/" : "");
+  if (!baseUrl || baseUrl.startsWith("file://")) {
     qrImg.style.display = "none";
     qrImg.parentElement.querySelector(".footer-qr-hint").textContent =
       "Deploy your site to get a QR code";
     return;
   }
 
-  qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=${encodeURIComponent(url)}`;
+  qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=${encodeURIComponent(baseUrl)}`;
   qrImg.style.display = "";
 }
 
@@ -562,6 +565,12 @@ function initParallax() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  // Redirect to landing if no guest info (name/table)
+  if (!sessionStorage.getItem("nolkeGuestName") || !sessionStorage.getItem("nolkeTableNo")) {
+    window.location.replace("index.html");
+    return;
+  }
+
   document.body.style.opacity = "0";
   document.body.style.transition = "opacity 0.5s ease";
   requestAnimationFrame(() => {
