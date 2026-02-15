@@ -407,7 +407,7 @@ function initScrollReveal() {
 }
 
 // Cart logic
-let cart = JSON.parse(localStorage.getItem("nolkeCart")) || {};
+let cart = JSON.parse(sessionStorage.getItem("nolkeCart")) || {};
 
 function updateCartUI() {
   const count = Object.values(cart).reduce((sum, item) => sum + item.qty, 0);
@@ -452,7 +452,7 @@ function updateCartUI() {
   }
 
   document.getElementById("cartTotal").textContent = `$${total}`;
-  localStorage.setItem("nolkeCart", JSON.stringify(cart));
+  sessionStorage.setItem("nolkeCart", JSON.stringify(cart));
 }
 
 function addToCart(id, name, price) {
