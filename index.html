@@ -16,7 +16,13 @@
                 <h1 class="menu-title">MENU</h1>
                 <p class="restaurant-name">Nölke Zahida Restaurant</p>
             </div>
-            <button class="cart-toggle" id="cartToggle" aria-label="View cart">
+            <div class="header-actions">
+                <div class="search-bar-wrapper">
+                    <span class="search-icon" aria-hidden="true">🔍</span>
+                    <input type="search" id="menuSearch" class="search-input" placeholder="Search dishes..." autocomplete="off">
+                    <button type="button" class="search-clear" id="searchClear" aria-label="Clear search" title="Clear">×</button>
+                </div>
+                <button class="cart-toggle" id="cartToggle" aria-label="View cart">
                 <svg class="cart-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
                     <line x1="3" y1="6" x2="21" y2="6"/>
@@ -24,6 +30,7 @@
                 </svg>
                 <span class="cart-count" id="cartCount">0</span>
             </button>
+            </div>
         </div>
     </header>
 
@@ -39,6 +46,7 @@
 
     <main class="menu-container">
         <p class="order-intro">Order our best food options — Scan & order at your table</p>
+        <p class="search-message" id="searchMessage"></p>
 
         <!-- Quick Menu (first thing customers see) -->
         <section class="quick-menu-section">
@@ -60,14 +68,20 @@
             <h2 class="details-section-title">View ingredients & details</h2>
             <p class="details-intro">Click an item above or browse below for full details, ingredients, and allergen info.</p>
 
-            <div class="menu-section">
-                <h2 class="section-title">MAIN COURSE</h2>
-                <div class="menu-grid" id="mainCourse"></div>
+            <div class="similar-dishes-section" id="similarDishesSection" style="display: none;">
+                <h3 class="similar-dishes-title" id="similarDishesTitle"></h3>
+                <div class="menu-grid" id="similarDishesGrid"></div>
             </div>
 
-            <div class="menu-section">
-                <h2 class="section-title">APPETIZER</h2>
-                <div class="menu-grid" id="appetizer"></div>
+            <div id="mainMenuSection">
+                <div class="menu-section">
+                    <h2 class="section-title">MAIN COURSE</h2>
+                    <div class="menu-grid" id="mainCourse"></div>
+                </div>
+                <div class="menu-section">
+                    <h2 class="section-title">APPETIZER</h2>
+                    <div class="menu-grid" id="appetizer"></div>
+                </div>
             </div>
         </section>
     </main>

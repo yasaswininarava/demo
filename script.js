@@ -161,9 +161,77 @@ function getVegSymbol(veg) {
     : '<span class="nonveg-symbol" title="Non-Vegetarian">●</span>';
 }
 
-function renderQuickMenu() {
+// Get all menu items with category
+function getAllMenuItems() {
+  return [
+    ...MENU_DATA.mainCourse.map((item) => ({ ...item, category: "mainCourse" })),
+    ...MENU_DATA.appetizer.map((item) => ({ ...item, category: "appetizer" })),
+  ];
+}
+
+// Search and similarity logic
+function searchMenu(query) {
+  const q = query.trim().toLowerCase();
+  if (!q) return { exact: getAllMenuItems(), similar: [], isSimilar: false };
+
+  const allItems = getAllMenuItems();
+  const words = q.split(/\s+/).filter((w) => w.length > 1);
+
+  const exact = allItems.filter((item) => {
+    const searchText = [
+      item.name,
+      item.tagline,
+      item.description,
+      item.ingredients.join(" "),
+      item.category === "mainCourse" ? "main course" : "appetizer",
+    ]
+      .join(" ")
+      .toLowerCase();
+    return words.every((w) => searchText.includes(w)) || searchText.includes(q);
+  });
+
+  if (exact.length > 0) {
+    return { exact, similar: [], isSimilar: false };
+  }
+
+  // No exact match - find similar (partial match, shared words)
+  const scored = allItems.map((item) => {
+    const searchText = [
+      item.name,
+      item.tagline,
+      item.description,
+      item.ingredients.join(" "),
+    ]
+      .join(" ")
+      .toLowerCase();
+    let score = 0;
+    for (const w of words) {
+      if (item.name.toLowerCase().includes(w)) score += 10;
+      if (searchText.includes(w)) score += 5;
+      if (item.ingredients.some((i) => i.toLowerCase().includes(w))) score += 3;
+    }
+    if (item.name.toLowerCase().includes(q) || q.includes(item.name.toLowerCase())) score += 8;
+    return { item, score };
+  });
+
+  const similar = scored
+    .filter((s) => s.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 6)
+    .map((s) => s.item);
+
+  return {
+    exact: [],
+    similar: similar.length > 0 ? similar : allItems.slice(0, 6),
+    isSimilar: true,
+  };
+}
+
+function renderQuickMenu(filteredItems = null) {
   const mainEl = document.getElementById("quickMainCourse");
   const appEl = document.getElementById("quickAppetizer");
+  mainEl.innerHTML = "";
+  appEl.innerHTML = "";
 
   function createQuickItem(item) {
     const li = document.createElement("li");
@@ -183,58 +251,131 @@ function renderQuickMenu() {
     return li;
   }
 
-  MENU_DATA.mainCourse.forEach((item) => mainEl.appendChild(createQuickItem(item)));
-  MENU_DATA.appetizer.forEach((item) => appEl.appendChild(createQuickItem(item)));
+  const mainItems = filteredItems
+    ? filteredItems.filter((i) => i.category === "mainCourse")
+    : MENU_DATA.mainCourse.map((i) => ({ ...i, category: "mainCourse" }));
+  const appItems = filteredItems
+    ? filteredItems.filter((i) => i.category === "appetizer")
+    : MENU_DATA.appetizer.map((i) => ({ ...i, category: "appetizer" }));
+
+  mainItems.forEach((item) => mainEl.appendChild(createQuickItem(item)));
+  appItems.forEach((item) => appEl.appendChild(createQuickItem(item)));
 }
 
-function renderMenuItems() {
+function createItemCard(item) {
+  const card = document.createElement("article");
+  card.className = "menu-card";
+  card.id = `detail-${item.id}`;
+  card.dataset.id = item.id;
+
+  const allergens = item.allergens || [];
+  const allergensHtml = allergens.length
+    ? `<p class="allergen-warning"><strong>Allergen Warning!</strong> Contains: ${allergens.join(", ")}</p>`
+    : "";
+
+  const ingredients = item.ingredients || [];
+  const ingredientsList = ingredients.map((i) => `<li>${i}</li>`).join("");
+
+  card.innerHTML = `
+    <div class="menu-card-image">
+      <img src="${item.image}" alt="${item.name}" loading="lazy" />
+    </div>
+    <div class="menu-card-content">
+      <div class="menu-card-main">
+        <h3 class="item-title">${item.name} ${getVegSymbol(item.veg)}</h3>
+        <p class="item-tagline">${item.tagline}</p>
+        <p class="item-description">${item.description}</p>
+        <p class="serving-size"><strong>Serving Size:</strong> ${item.servingSize}</p>
+        ${allergensHtml}
+        <div class="ingredients-box">
+          <h4>Ingredients</h4>
+          <ul class="ingredients-list">${ingredientsList}</ul>
+        </div>
+      </div>
+      <div class="menu-card-actions">
+        <span class="item-price">$${item.price}</span>
+        <button class="add-to-cart-btn" data-id="${item.id}" data-name="${item.name}" data-price="${item.price}">
+          Add to Cart
+        </button>
+      </div>
+    </div>
+  `;
+
+  return card;
+}
+
+function renderMenuItems(filteredItems = null) {
   const mainCourseEl = document.getElementById("mainCourse");
   const appetizerEl = document.getElementById("appetizer");
+  mainCourseEl.innerHTML = "";
+  appetizerEl.innerHTML = "";
 
-  function createItemCard(item) {
-    const card = document.createElement("article");
-    card.className = "menu-card";
-    card.id = `detail-${item.id}`;
-    card.dataset.id = item.id;
+  const mainItems = filteredItems
+    ? filteredItems.filter((i) => i.category === "mainCourse")
+    : MENU_DATA.mainCourse.map((i) => ({ ...i, category: "mainCourse" }));
+  const appItems = filteredItems
+    ? filteredItems.filter((i) => i.category === "appetizer")
+    : MENU_DATA.appetizer.map((i) => ({ ...i, category: "appetizer" }));
 
-    const allergensHtml = item.allergens.length
-      ? `<p class="allergen-warning"><strong>Allergen Warning!</strong> Contains: ${item.allergens.join(", ")}</p>`
-      : "";
-
-    const ingredientsList = item.ingredients.map((i) => `<li>${i}</li>`).join("");
-
-    card.innerHTML = `
-      <div class="menu-card-image">
-        <img src="${item.image}" alt="${item.name}" loading="lazy" />
-      </div>
-      <div class="menu-card-content">
-        <div class="menu-card-main">
-          <h3 class="item-title">${item.name} ${getVegSymbol(item.veg)}</h3>
-          <p class="item-tagline">${item.tagline}</p>
-          <p class="item-description">${item.description}</p>
-          <p class="serving-size"><strong>Serving Size:</strong> ${item.servingSize}</p>
-          ${allergensHtml}
-          <div class="ingredients-box">
-            <h4>Ingredients</h4>
-            <ul class="ingredients-list">${ingredientsList}</ul>
-          </div>
-        </div>
-        <div class="menu-card-actions">
-          <span class="item-price">$${item.price}</span>
-          <button class="add-to-cart-btn" data-id="${item.id}" data-name="${item.name}" data-price="${item.price}">
-            Add to Cart
-          </button>
-        </div>
-      </div>
-    `;
-
-    return card;
-  }
-
-  MENU_DATA.mainCourse.forEach((item) => mainCourseEl.appendChild(createItemCard(item)));
-  MENU_DATA.appetizer.forEach((item) => appetizerEl.appendChild(createItemCard(item)));
+  mainItems.forEach((item) => mainCourseEl.appendChild(createItemCard(item)));
+  appItems.forEach((item) => appetizerEl.appendChild(createItemCard(item)));
 
   initScrollReveal();
+}
+
+function renderSimilarDishes(items, query, isSimilar) {
+  const section = document.getElementById("similarDishesSection");
+  const titleEl = document.getElementById("similarDishesTitle");
+  const grid = document.getElementById("similarDishesGrid");
+  const mainSection = document.getElementById("mainMenuSection");
+
+  if (!items || items.length === 0) {
+    section.style.display = "none";
+    mainSection.style.display = "";
+    return;
+  }
+
+  section.style.display = "block";
+  mainSection.style.display = isSimilar ? "none" : "";
+
+  titleEl.textContent = isSimilar
+    ? `We couldn't find "${query}". Similar dishes you might like:`
+    : "Search results";
+
+  grid.innerHTML = "";
+  items.forEach((item) => grid.appendChild(createItemCard(item)));
+  initScrollReveal();
+}
+
+function applySearch() {
+  const query = document.getElementById("menuSearch").value.trim();
+  const messageEl = document.getElementById("searchMessage");
+  const similarSection = document.getElementById("similarDishesSection");
+  const mainSection = document.getElementById("mainMenuSection");
+
+  if (!query) {
+    messageEl.textContent = "";
+    similarSection.style.display = "none";
+    mainSection.style.display = "";
+    renderQuickMenu();
+    renderMenuItems();
+    return;
+  }
+
+  const { exact, similar, isSimilar } = searchMenu(query);
+
+  if (exact.length > 0) {
+    messageEl.textContent = `Found ${exact.length} dish${exact.length > 1 ? "es" : ""} for "${query}"`;
+    messageEl.className = "search-message search-message-success";
+    similarSection.style.display = "none";
+    mainSection.style.display = "";
+    renderQuickMenu(exact);
+    renderMenuItems(exact);
+  } else {
+    messageEl.textContent = `No exact match for "${query}"`;
+    messageEl.className = "search-message search-message-similar";
+    renderSimilarDishes(similar, query, true);
+  }
 }
 
 // Scroll reveal effect for menu items (visible when scrolling through ingredients)
@@ -433,19 +574,33 @@ document.addEventListener("DOMContentLoaded", () => {
   updateCartUI();
   initQRCode();
 
-  document.querySelectorAll(".quick-add-btn").forEach((btn) => {
-    btn.addEventListener("click", (e) => {
-      e.preventDefault();
-      addToCart(btn.dataset.id, btn.dataset.name, Number(btn.dataset.price));
-      openCart();
-    });
+  // Search
+  const searchInput = document.getElementById("menuSearch");
+  const searchClear = document.getElementById("searchClear");
+  let searchDebounce;
+  searchInput.addEventListener("input", () => {
+    clearTimeout(searchDebounce);
+    searchDebounce = setTimeout(applySearch, 200);
+  });
+  searchClear.addEventListener("click", () => {
+    searchInput.value = "";
+    searchInput.focus();
+    applySearch();
   });
 
-  document.querySelectorAll(".add-to-cart-btn").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      addToCart(btn.dataset.id, btn.dataset.name, Number(btn.dataset.price));
+  // Event delegation for add-to-cart (works with dynamically added content)
+  document.addEventListener("click", (e) => {
+    const quickBtn = e.target.closest(".quick-add-btn");
+    const cartBtn = e.target.closest(".add-to-cart-btn");
+    if (quickBtn) {
+      e.preventDefault();
+      addToCart(quickBtn.dataset.id, quickBtn.dataset.name, Number(quickBtn.dataset.price));
       openCart();
-    });
+    }
+    if (cartBtn) {
+      addToCart(cartBtn.dataset.id, cartBtn.dataset.name, Number(cartBtn.dataset.price));
+      openCart();
+    }
   });
 
   document.getElementById("cartToggle").addEventListener("click", openCart);
